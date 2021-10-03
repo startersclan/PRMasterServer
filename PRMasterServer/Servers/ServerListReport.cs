@@ -100,10 +100,11 @@ namespace PRMasterServer.Servers
 					SendTimeout = 5000,
 					ReceiveTimeout = 5000,
 					SendBufferSize = BufferSize,
-					ReceiveBufferSize = BufferSize
+					ReceiveBufferSize = BufferSize,
+					ExclusiveAddressUse = true
 				};
 
-				_socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ExclusiveAddressUse, true);
+				// _socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ExclusiveAddressUse, true);
 				_socket.Bind(new IPEndPoint(info.Address, info.Port));
 
 				_socketReadEvent = new SocketAsyncEventArgs() {
@@ -300,7 +301,7 @@ namespace PRMasterServer.Servers
 				server.country = "??";
 			} else {
 				try {
-					server.country = GeoIP.Instance.Reader.Omni(server.IPAddress).Country.IsoCode.ToUpperInvariant();
+					server.country = GeoIP.Instance.Reader.Country(server.IPAddress).RegisteredCountry.IsoCode.ToUpperInvariant();
 				} catch (Exception e) {
 					LogError(Category, e.ToString());
 					server.country = "??";

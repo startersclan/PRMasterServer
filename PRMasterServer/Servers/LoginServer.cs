@@ -90,12 +90,11 @@ namespace PRMasterServer.Servers
 					ReceiveTimeout = 30000,
 					SendBufferSize = 8192,
 					ReceiveBufferSize = 8192,
-					Blocking = false
+					Blocking = false,
+					ExclusiveAddressUse = true,
+					LingerState = new LingerOption(false, 0)
 				};
-
-				_clientManagerSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ExclusiveAddressUse, true);
-				_clientManagerSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
-				_clientManagerSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Linger, false);
+				
 				_clientManagerSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
 				
 				_clientManagerSocket.Bind(new IPEndPoint(info.Address, info.Port));
@@ -131,12 +130,11 @@ namespace PRMasterServer.Servers
 					ReceiveTimeout = 5000,
 					SendBufferSize = 8192,
 					ReceiveBufferSize = 8192,
-					Blocking = false
+					Blocking = false,
+					ExclusiveAddressUse = true,
+					LingerState = new LingerOption(false, 0)
 				};
 
-				_searchManagerSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ExclusiveAddressUse, true);
-				_searchManagerSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
-				_searchManagerSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Linger, false);
 				_searchManagerSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
 
 				_searchManagerSocket.Bind(new IPEndPoint(info.Address, info.Port));
@@ -213,7 +211,6 @@ namespace PRMasterServer.Servers
 			try {
 				if (state.SendCallback == null)
 					state.SendCallback = OnSent;
-
 				state.Socket.BeginSend(data, 0, data.Length, SocketFlags.None, state.SendCallback, state);
 				return true;
 			} catch (NullReferenceException) {
@@ -274,7 +271,7 @@ namespace PRMasterServer.Servers
 			try {
 				if (state.DataReceivedCallback == null)
 					state.DataReceivedCallback = OnDataReceived;
-
+				
 				state.Socket.BeginReceive(state.Buffer, 0, state.Buffer.Length, SocketFlags.None, state.DataReceivedCallback, state);
 			} catch (NullReferenceException) {
 				if (state != null)

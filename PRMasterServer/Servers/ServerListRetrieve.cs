@@ -140,10 +140,10 @@ namespace PRMasterServer.Servers
 					SendTimeout = 5000,
 					ReceiveTimeout = 5000,
 					SendBufferSize = 65535,
-					ReceiveBufferSize = 65535
+					ReceiveBufferSize = 65535,
+					ExclusiveAddressUse = true,
+					LingerState = new LingerOption(false, 0)
 				};
-				_socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ExclusiveAddressUse, true);
-				_socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
 
 				_socket.Bind(new IPEndPoint(info.Address, info.Port));
 				_socket.Listen(10);
