@@ -6,6 +6,7 @@ using System.Data.SQLite;
 using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Runtime.Loader;
 
 namespace PRMasterServer.Data
 {
@@ -19,10 +20,7 @@ namespace PRMasterServer.Data
 		private static LoginDatabase _instance;
 
 		private SQLiteConnection _db;
-
-		private delegate bool EventHandler(CtrlType sig);
-		private static EventHandler _closeHandler;
-
+		
 		private SQLiteCommand _getUsersByName;
 		private SQLiteCommand _getUsersByEmail;
 		private SQLiteCommand _updateUser;
@@ -41,8 +39,9 @@ namespace PRMasterServer.Data
 		{
 			// we need to safely dispose of the database when the application closes
 			// this is a console app, so we need to hook into the console ctrl signal
-			_closeHandler += CloseHandler;
-			SetConsoleCtrlHandler(_closeHandler, true);
+			AppDomain.CurrentDomain.ProcessExit += ProcessExitHandler;
+			AssemblyLoadContext.Default.Unloading += UnloadHandler;
+			Console.CancelKeyPress += new ConsoleCancelEventHandler(ConsoleExitHandler);
 
 			Log = log;
 			LogError = logError;
@@ -95,7 +94,7 @@ namespace PRMasterServer.Data
 					}
 				}
 			}
-			
+
 			LogError(Category, "Error creating database");
 			_instance.Dispose();
 			_instance = null;
@@ -138,22 +137,7 @@ namespace PRMasterServer.Data
 			_logUserUpdateCountry.Parameters.Add("@time", DbType.Int64);
 			_logUserUpdateCountry.Parameters.Add("@name", DbType.String);
 		}
-
-		private static bool CloseHandler(CtrlType sig)
-		{
-			if (_instance != null)
-				_instance.Dispose();
-
-			switch (sig) {
-				case CtrlType.CTRL_C_EVENT:
-				case CtrlType.CTRL_LOGOFF_EVENT:
-				case CtrlType.CTRL_SHUTDOWN_EVENT:
-				case CtrlType.CTRL_CLOSE_EVENT:
-				default:
-					return false;
-			}
-		}
-
+		
 		public void Dispose()
 		{
 			Dispose(true);
@@ -331,8 +315,9 @@ namespace PRMasterServer.Data
 
 			string country = "??";
 			if (GeoIP.Instance != null && GeoIP.Instance.Reader != null) {
-				try {
-					country = GeoIP.Instance.Reader.Omni(address.ToString()).Country.IsoCode.ToUpperInvariant();
+				try
+				{
+					country = GeoIP.Instance.Reader.Country(address.ToString()).RegisteredCountry.IsoCode.ToUpperInvariant();
 				} catch (Exception) {
 				}
 			}
@@ -400,17 +385,20 @@ namespace PRMasterServer.Data
 
 			return existing;
 		}
-
-		[DllImport("Kernel32")]
-		private static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);
-
-		private enum CtrlType
+		
+		private static void ConsoleExitHandler(object sender, ConsoleCancelEventArgs args)
 		{
-			CTRL_C_EVENT = 0,
-			CTRL_BREAK_EVENT = 1,
-			CTRL_CLOSE_EVENT = 2,
-			CTRL_LOGOFF_EVENT = 5,
-			CTRL_SHUTDOWN_EVENT = 6
+			_instance?.Dispose();
+		}
+
+		private static void ProcessExitHandler(object sender, EventArgs e)
+		{
+			_instance?.Dispose();
+		}
+		
+		private static void UnloadHandler(AssemblyLoadContext obj)
+		{
+			_instance?.Dispose();
 		}
 	}
 }
