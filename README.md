@@ -1,10 +1,14 @@
-PRMasterServer
-==============
+# PRMasterServer
+
+[![github-actions](https://github.com/startersclan/prmasterserver/workflows/ci-master-pr/badge.svg)](https://github.com/startersclan/prmasterserver/actions)
+[![github-release](https://img.shields.io/github/v/release/startersclan/prmasterserver?style=flat-square)](https://github.com/startersclan/prmasterserver/releases/)
+[![docker-image-size](https://img.shields.io/docker/image-size/startersclan/prmasterserver/latest)](https://hub.docker.com/r/startersclan/prmasterserver)
+
 
 A GameSpy replacement Master Server for [Project Reality: BF2](http://www.realitymod.com). This emulates the GameSpy API in order to keep PR:BF2 playable after the Battlefield 2 GameSpy shutdown.
 
-Features
----------------------
+## Features
+
 Supports **Battlefield 2**'s GameSpy implementation. No other games are supported (yet?). If you wish to modify the code and add support for your game, or add any additional features, please feel free to make a **fork** and submit a [pull request](https://help.github.com/articles/using-pull-requests).
 
 - Login Server (Uses SQLite for the database)
@@ -19,8 +23,30 @@ Supports **Battlefield 2**'s GameSpy implementation. No other games are supporte
 - CD Key Authentication
     - Accepts all CD Keys with no further checks.
 
-Setting up the project
----------------------
+## Usage
+
+The docker image includes the binary, dependencies, and the [MaxMind GeoIP2 Country](https://www.maxmind.com/en/country).
+
+```sh
+# Run stateless - don't keep DB
+vi modwhitelist.txt
+docker run --rm -it \
+    -v modwhitelist.txt:/app/modwhitelist.txt:ro \
+    startersclan/prmasterserver:latest
+
+# Run stateful - keep DB
+vi modwhitelist.txt
+docker volume create data-volume
+docker run --rm -it \
+    -v modwhitelist.txt:/app/modwhitelist.txt:ro \
+    -v data-volume:/data
+    startersclan/prmasterserver:latest
+
+# Now launch Battlefield 2, and try creating a multiplayer account and logging in and out
+```
+
+## Setting up the project
+
 1. Be sure to have [Visual Studio 2013](http://www.microsoft.com/en-us/download/details.aspx?id=40787) installed.  You might be able to compile it using previous versions of Visual Studio or using Mono, but this is untested and may not work.
 
 2. Open **PRMasterServer.sln**, and build. This should download via NuGet any extra packages required.
@@ -33,16 +59,15 @@ Setting up the project
 5. Run **PRMasterServer.exe +db LoginDatabase.db3** and it should start up with no errors. You can use an optional **+bind xxx.xxx.xxx.xxx** paramter to bind the server to a specific network interface, or by default it will bind to all available interfaces.
 
 6. If there's issues, unlucky, I'm sure you'll be able to figure them out :).
-    
-Stuff to do
----------------------
+
+## Stuff to do
+
 Of course, no project is ever really *complete*, there's plenty of other stuff that could be done. Maybe in the future it just might happen.
 
 - Comment the code so you poor folk can understand the black magic.
 - Manage account protocol (delete accounts, change password, change email).
 - Maybe support some other games than just Battlefield 2. But isn't that the point of open sourcing and putting it on GitHub? If you  want it, make a fork and do it ;).
 
-Credits
----------------------
+## Credits
 
 [Luigi Auriemma](http://aluigi.org) for reverse engineering the GameSpy protocol and encryption.
