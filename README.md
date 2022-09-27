@@ -4,7 +4,6 @@
 [![github-release](https://img.shields.io/github/v/release/startersclan/prmasterserver?style=flat-square)](https://github.com/startersclan/prmasterserver/releases/)
 [![docker-image-size](https://img.shields.io/docker/image-size/startersclan/prmasterserver/latest)](https://hub.docker.com/r/startersclan/prmasterserver)
 
-
 A GameSpy replacement Master Server for [Project Reality: BF2](http://www.realitymod.com). This emulates the GameSpy API in order to keep PR:BF2 playable after the Battlefield 2 GameSpy shutdown.
 
 ## Features
@@ -28,18 +27,15 @@ Supports **Battlefield 2**'s GameSpy implementation. No other games are supporte
 The docker image includes the binary, dependencies, and the [MaxMind GeoIP2 Country](https://www.maxmind.com/en/country).
 
 ```sh
-# Run stateless - don't keep DB
-vi modwhitelist.txt
-docker run --rm -it \
-    -v modwhitelist.txt:/app/modwhitelist.txt:ro \
-    startersclan/prmasterserver:latest
+# Test run
+docker run --rm -it -p 29900:29900/tcp -p 29901:29901/tcp -p 28910:28910/tcp -p 27900:27900/udp -p 29910:29910/udp startersclan/prmasterserver:latest
 
-# Run stateful - keep DB
-vi modwhitelist.txt
+# Run with support for bf2 and fh2
+printf "bf2\nfh2\n" > modwhitelist.txt
 docker volume create data-volume
-docker run --rm -it \
+docker run --rm -it -p 29900:29900/tcp -p 29901:29901/tcp -p 28910:28910/tcp -p 27900:27900/udp -p 29910:29910/udp \
     -v modwhitelist.txt:/app/modwhitelist.txt:ro \
-    -v data-volume:/data
+    -v data-volume:/data \
     startersclan/prmasterserver:latest
 
 # Now launch Battlefield 2, and try creating a multiplayer account and logging in and out
