@@ -24,7 +24,7 @@ Supports **Battlefield 2**'s GameSpy implementation. No other games are supporte
 
 ## Usage
 
-The docker image includes the binary, dependencies, and the [MaxMind GeoIP2 Country](https://www.maxmind.com/en/country).
+The docker image includes the binary, dependencies, and the [MaxMind GeoIP2 Country](https://www.maxmind.com/en/country) database.
 
 ```sh
 # Test run
