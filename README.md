@@ -2,7 +2,7 @@
 
 [![github-actions](https://github.com/startersclan/prmasterserver/workflows/ci-master-pr/badge.svg)](https://github.com/startersclan/prmasterserver/actions)
 [![github-release](https://img.shields.io/github/v/release/startersclan/prmasterserver?style=flat-square)](https://github.com/startersclan/prmasterserver/releases/)
-[![docker-image-size](https://img.shields.io/docker/image-size/startersclan/prmasterserver/latest)](https://hub.docker.com/r/startersclan/prmasterserver)
+[![docker-image-size](https://img.shields.io/docker/image-size/startersclan/prmasterserver/master)](https://hub.docker.com/r/startersclan/prmasterserver)
 
 A GameSpy replacement Master Server for [Project Reality: BF2](http://www.realitymod.com). This emulates the GameSpy API in order to keep PR:BF2 playable after the Battlefield 2 GameSpy shutdown.
 
