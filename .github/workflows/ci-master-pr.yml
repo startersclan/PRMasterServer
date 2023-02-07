@@ -55,9 +55,6 @@ jobs:
         # CI_PROJECT_NAMESPACE=$( echo "${{ github.repository }}" | cut -d '/' -f 1 )
         # CI_PROJECT_NAME=$( echo "${{ github.repository }}" | cut -d '/' -f 2 )
 
-        # Lowercase 'namespace/project-name' for docker image tag. E.g. 'startersclan/ASP' to 'startersclan/asp'
-        GITHUB_REPOSITORY_LOWERCASED="$( echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]' )" # Lowercase
-
         # Get ref, i.e. <branch_name> from refs/heads/<branch_name>, or <tag-name> from refs/tags/<tag_name>. E.g. 'master' or 'v1.2.3'
         REF=$( echo "${GITHUB_REF}" | rev | cut -d '/' -f 1 | rev )
 
@@ -67,7 +64,6 @@ jobs:
         # Pass variables to next step
         # echo "CI_PROJECT_NAMESPACE=$CI_PROJECT_NAMESPACE" >> $GITHUB_ENV
         # echo "CI_PROJECT_NAME=$CI_PROJECT_NAME" >> $GITHUB_ENV
-        echo "GITHUB_REPOSITORY_LOWERCASED=$GITHUB_REPOSITORY_LOWERCASED" >> $GITHUB_ENV
         echo "REF=$REF" >> $GITHUB_ENV
         echo "SHA_SHORT=$SHA_SHORT" >> $GITHUB_ENV
 
@@ -89,8 +85,8 @@ jobs:
         platforms: linux/amd64
         push: false
         tags: |
-           ${{ env.GITHUB_REPOSITORY_LOWERCASED }}:${{ env.REF }}
-           ${{ env.GITHUB_REPOSITORY_LOWERCASED }}:${{ env.REF }}-${{ env.SHA_SHORT }}
+           ${{ github.repository }}:${{ env.REF }}
+           ${{ github.repository }}:${{ env.REF }}-${{ env.SHA_SHORT }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
 
@@ -105,8 +101,8 @@ jobs:
         platforms: linux/amd64
         push: true
         tags: |
-           ${{ env.GITHUB_REPOSITORY_LOWERCASED }}:${{ env.REF }}
-           ${{ env.GITHUB_REPOSITORY_LOWERCASED }}:${{ env.REF }}-${{ env.SHA_SHORT }}
+           ${{ github.repository }}:${{ env.REF }}
+           ${{ github.repository }}:${{ env.REF }}-${{ env.SHA_SHORT }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
 
@@ -120,9 +116,9 @@ jobs:
         platforms: linux/amd64
         push: true
         tags: |
-           ${{ env.GITHUB_REPOSITORY_LOWERCASED }}:${{ env.REF }}
-           ${{ env.GITHUB_REPOSITORY_LOWERCASED }}:${{ env.REF }}-${{ env.SHA_SHORT }}
-           ${{ env.GITHUB_REPOSITORY_LOWERCASED }}:latest
+           ${{ github.repository }}:${{ env.REF }}
+           ${{ github.repository }}:${{ env.REF }}-${{ env.SHA_SHORT }}
+           ${{ github.repository }}:latest
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
 
