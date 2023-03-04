@@ -48,12 +48,11 @@ jobs:
 
     # This step generates the docker tags
     - name: Docker meta
-      id: meta-simple
+      id: meta
       uses: docker/metadata-action@v4
       with:
         images: |
           ${{ github.repository }}
-          ghcr.io/${{ github.repository }}
         # type=ref,event=pr generates tag(s) on PRs only. E.g. 'pr-123', 'pr-123-abc0123'
         # type=ref,event=branch generates tag(s) on branch only. E.g. 'master', 'master-abc0123'
         # type=semver generates tag(s) on tags only. E.g. 'v0.0.0', 'v0.0.0-abc0123', and 'latest'
