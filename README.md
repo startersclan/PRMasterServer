@@ -41,6 +41,20 @@ docker run --rm -it -p 29900:29900/tcp -p 29901:29901/tcp -p 28910:28910/tcp -p 
 # Now launch Battlefield 2, and try creating a multiplayer account and logging in and out
 ```
 
+## FAQ
+
+### Q: Error: `MaxMind.GeoIP2.Exceptions.AddressNotFoundException: The address 192.168.192.3 is not in the database`
+
+A: This error may be safely ignored. The error is seen when the IP of the registering BF2 server is a private IP address instead of a public IP address as seen by `PRMasterServer` (for example, when using docker). For example:
+
+```
+[2023-11-07 15:34:11.556] [ServerReport] MaxMind.GeoIP2.Exceptions.AddressNotFoundException: The address 192.168.192.3 is not in the database.
+at MaxMind.GeoIP2.DatabaseReader.Execute[T](String ipStr, IPAddress ipAddress, String type, Boolean throwOnNullResponse)
+at MaxMind.GeoIP2.DatabaseReader.Execute[T](String ipStr, String type, Boolean throwOnNullResponse)
+at MaxMind.GeoIP2.DatabaseReader.Country(String ipAddress)
+at PRMasterServer.Servers.ServerListReport.ParseServerDetails(IPEndPoint remote, Byte[] data) in /source/PRMasterServer/Servers/ServerListReport.cs:line 304
+```
+
 ## Setting up the project
 
 1. Be sure to have [Visual Studio 2013](http://www.microsoft.com/en-us/download/details.aspx?id=40787) installed.  You might be able to compile it using previous versions of Visual Studio or using Mono, but this is untested and may not work.
