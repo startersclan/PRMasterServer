@@ -34,7 +34,7 @@ docker run --rm -it -p 29900:29900/tcp -p 29901:29901/tcp -p 28910:28910/tcp -p 
 printf "bf2\nfh2\n" > modwhitelist.txt
 docker volume create data-volume
 docker run --rm -it -p 29900:29900/tcp -p 29901:29901/tcp -p 28910:28910/tcp -p 27900:27900/udp -p 29910:29910/udp \
-    -v modwhitelist.txt:/app/modwhitelist.txt:ro \
+    -v $(pwd)/modwhitelist.txt:/app/modwhitelist.txt:ro \
     -v data-volume:/data \
     startersclan/prmasterserver:latest
 
@@ -44,7 +44,7 @@ docker run --rm -it -p 29900:29900/tcp -p 29901:29901/tcp -p 28910:28910/tcp -p 
 ## FAQ
 
 ### Q: Error: `MaxMind.GeoIP2.Exceptions.AddressNotFoundException: The address 192.168.192.3 is not in the database`
-
+∑
 A: This error may be safely ignored. The error is seen when the IP of the registering BF2 server is a private IP address instead of a public IP address as seen by `PRMasterServer` (for example, when using docker). For example:
 
 ```
